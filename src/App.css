@@ -1,0 +1,68 @@
+body {
+  background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
+  color: #e0f7fa;
+  font-family: 'Orbitron', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.microphone-btn {
+  position: relative;
+  padding:9px;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+}
+
+.microphone-btn::before {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(0, 229, 255, 0.3);
+  animation: ripple 2s infinite;
+}
+
+.mic{
+  filter:invert(1);
+  margin-top:3px;
+  margin-left:3px;
+}
+
+.yousaid{
+  margin-top:10px;
+}
+.jarvis{
+  margin-top:40px;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0px #00e5ff; }
+  50% { box-shadow: 0 0 10px #00e5ff; }
+  100% { box-shadow: 0 0 0px #00e5ff; }
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.6; }
+  70% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.typing-dots span {
+  animation: blink 1.5s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+.glassmorphic {
+  background: rgba(255, 255, 255, 0.05);
+  margin-top:100px;
+  padding:20px;
+  }
