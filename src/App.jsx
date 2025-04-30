@@ -2,26 +2,38 @@ import { useState, useEffect } from "react";
 import './App.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 function App() {
-  const [text, setText] = useState("")
-  const [geminiResponse, setGeminiResponse] = useState("")
-  const [displayedResponse, setDisplayedResponse] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [text, setText] = useState("");
+  const [geminiResponse, setGeminiResponse] = useState("");
+  const [displayedResponse, setDisplayedResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function clicked() {
-    const speechRecg = new window.webkitSpeechRecognition();
-    speechRecg.continuous = false;
-    speechRecg.interimResults = false;
+    const btn = document.querySelector(".microphone-btn");
+    btn.classList.add("listening");
+
+    const speechRecg = new window.webkitSpeechRecognition()
+    speechRecg.continuous = false
+    speechRecg.interimResults = false
 
     speechRecg.onresult = (event) => {
-      let transcript = event.results[0][0].transcript
-      console.log("You said:", transcript)
-      setText(transcript)
-    }
-    speechRecg.start()
+      let transcript = event.results[0][0].transcript;
+      console.log("You said:", transcript);
+      setText(transcript);
+      btn.classList.remove("listening")
+    };
+
+    speechRecg.onerror = () => {
+      btn.classList.remove("listening");
+    };
+
+    speechRecg.onend = () => {
+      btn.classList.remove("listening");
+    };
+
+    speechRecg.start();
   }
 
   useEffect(() => {
@@ -47,9 +59,9 @@ function App() {
         const response = await result.response;
         const reply = response.text() || "No response";
         setGeminiResponse(reply);
-        console.log("Gemini response:", reply);
+        console.log("Gemini response:", reply)
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error:", error)
         setGeminiResponse("Jarvis is currently unavailable due to server Issue. Please try again shortly.");
       } finally {
         setIsLoading(false);
@@ -63,18 +75,18 @@ function App() {
     if (!geminiResponse) return;
 
     let index = 0;
-    setDisplayedResponse("")
+    setDisplayedResponse("");
     const typingInterval = setInterval(() => {
-      setDisplayedResponse(prev => prev + geminiResponse[index]);
-      index += 1
-
-      if (index === geminiResponse.length) {
-        clearInterval(typingInterval)
+      if (index < geminiResponse.length - 1) {
+        setDisplayedResponse(prev => prev + geminiResponse[index]);
+        index += 1;
+      } else {
+        clearInterval(typingInterval);
       }
-    }, 20)
+    }, 20);
 
-    return () => clearInterval(typingInterval)
-  }, [geminiResponse])
+    return () => clearInterval(typingInterval);
+  }, [geminiResponse]);
 
   return (
     <div className="flex flex-col items-center justify-center px-4">
@@ -88,11 +100,13 @@ function App() {
           <img className="mic" src="microp.png" alt="microphone" />
         </button>
 
-        <div className="yousaid">
-          <p className="text-cyan-300 font-semibold"><strong className="text-cyan-100">You said:</strong> {text}</p>
+        <div className="yousaid mt-4">
+          <p className="text-cyan-300 font-semibold">
+            <strong className="text-cyan-100">You said:</strong> {text}
+          </p>
         </div>
 
-        <div className="text-cyan-200">
+        <div className="text-cyan-200 mt-4">
           <p className="text-cyan-100 font-bold">Jarvis:</p>
           {isLoading ? (
             <div className="typing-dots text-xl font-xbold">
